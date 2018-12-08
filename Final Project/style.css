@@ -1,0 +1,120 @@
+body{
+    font-family:"Lucida Console", Monospace;
+}
+/*Navigation Bar Set-Up*/
+.nav {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+    background-color:black;
+  }
+  
+  .nav_buttons {
+    float: right;
+    padding-right: 20px;
+    text-decoration: none;
+    margin: 10px;
+    font-family:"Lucida Console", Monospace;
+  }
+  .nav_element {
+      color: white;
+      padding-left: 10px;
+      width: 300px;
+    
+  }
+  
+  li button {
+    display: block;
+    color: white;
+    background-color: black;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+    border: none;
+    font-size: 15px;
+  }
+  
+  li button:hover {
+    background-color: darkgrey;
+  }
+
+  /*HomePage Set Up*/
+  .header_section{
+    margin:auto;
+    text-align: center;
+    width: 100%;
+  }
+  .title{
+      font-size: 70px;
+      border-bottom-style: solid;
+      font-weight: bold;
+      margin-bottom: 10px;
+  }
+  .subtitle{
+    margin:auto;
+    width: 80%;
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+  .row {
+    width: 100%;
+    margin:auto;
+  }
+  .column3 {
+    float: left;
+    text-align: center;
+    width: 33%;
+    height: 300px;
+}
+
+.column3:hover{
+  background-color: lightblue;
+}
+
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+
+/*Airlines Page Set up*/
+.tools {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    height: 30px;
+    overflow: hidden;
+    background-color:black;
+  }
+  
+.c2{
+  float: left;
+  text-align: left;
+  width: 50%;
+  height: 500px;
+}
+.anames{
+  font-size: 25px;
+}
+
+#RDU_list{
+  list-style-type: none;
+  position: relative;
+    overflow-y: scroll;
+    height: 500px;
+}
+#nonRDU_list{
+  list-style-type: none;
+  position: relative;
+    overflow-y: scroll;
+    height: 100%;
+}
+h2 {
+  font-size:30px;
+}
+
+
+  
+  
