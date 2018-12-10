@@ -305,6 +305,215 @@ var build_airlines_interface = function() {
 	// 	   }
 	//        });
     // });
+	
 
 };
+
+let create_flight_div = function(flight) {
+
+  let fid = flight.id;
+  var arrivalname;
+
+  $.ajax(root_url + "airports", {
+    type: 'GET',
+    async:false,
+    xhrFields: {withCredentials: true},
+    success: function(airports) {
+      for (var i=0; i<airports.length; i++) {
+        if (airports[i].id === flight.arrival_id) {
+          arrivalname = airports[i].name;
+          //  console.log("matched");
+          //  console.log(arrivalname);
+        }
+      }
+    }
+  })
+
+  var fstatus;
+
+  $.ajax(root_url + "instances?filter[flight_id]=" + encodeURIComponent(fid),  {
+    type: 'GET',
+    async: false,
+    xhrFields: {withCredentials: true},
+    success: function(instances) {
+      if (instances.length == 0) {
+        fdate = prompt("Date of flight: ");
+
+        $.ajax(root_url + "instances", {
+          type: 'POST',
+          xhrFields: {withCredentials: true},
+          data: {"instance":{
+            "flight_id": fid,
+            "date": fdate,
+            "is_cancelled": false
+          }},
+          dataType: "json",
+          success: function(response) {
+            console.log(response);
+          }
+        });
+      }
+      for (var i=0; i<instances.length; i++) {
+        if (instances[i].is_cancelled) {
+          fstatus = "Cancelled";
+        }
+        else {
+          fstatus = "On Time";
+        }
+      }
+    }
+  })
+
+  let flightdiv = $('<div class="flight" id="fid_' + flight.id + '"></div>');
+  console.log(arrivalname);
+  flightdiv.append('<div class="dest">Destination: ' + arrivalname + '</div>');
+
+  flightdiv.append('<div class="number">Flight Number: ' + flight.number + '</div>');
+  flightdiv.append('<div class="deptime">Departure: ' + flight.departs_at + '</div>');
+  flightdiv.append('<div class="arrtime">Arrival: ' + flight.arrives_at + '</div>');
+  flightdiv.append('<div class="status">Status: ' + fstatus + '</div>');
+
+  delaybtn = $('<button class="delay">Delay Flight</button>');
+  delaybtn.click(function() {
+    newdeptime = prompt("Enter new departure time:");
+    newarrtime = prompt("Enter new arrival time");
+
+    // flight.departs_at = newdeptime;
+    // flight.arrives_at = newarrtime;
+
+    $.ajax(root_url + 'flights/' + encodeURIComponent(fid), {
+      type: 'PATCH',
+      xhrFields: {withCredentials: true},
+      data: {"flight":{
+        "departs_at": newdeptime,
+        "arrives_at": newarrtime
+        }
+      },
+      dataType: "json",
+      success: function(response) {
+        console.log(response);
+      }
+    });
+    //build_flights_interface();
+    flightdiv.find(".deptime").replaceWith('<div class="deptime">Departure: ' + newdeptime + '</div>');
+    flightdiv.find(".arrtime").replaceWith('<div class="arrtime">Arrival: ' + newarrtime + '</div>');
+    flightdiv.find(".status").replaceWith('<div class="status">Status: Delayed</div>');
+  })
+  flightdiv.append(delaybtn);
+
+  cancelbtn = $('<button class="cancel">Cancel Flight</button>');
+  cancelbtn.click(function() {
+
+    $.ajax(root_url + "instances?filter[flight_id]=" + encodeURIComponent(fid),  {
+      type: 'GET',
+      xhrFields: {withCredentials: true},
+      success: function(instances) {
+        console.log(instances);
+
+        if (instances != null) {
+
+          for (var i=0; i<instances.length; i++) {
+
+            iid = instances[i].id;
+
+            $.ajax(root_url + "instances/" + encodeURIComponent(iid), {
+              type: 'PATCH',
+              xhrFields: {withCredentials: true},
+              data: {"instance":{
+                "is_cancelled": true
+              }},
+              dataType: "json",
+              success: function(response) {
+                console.log(response);
+              }
+            });
+          }
+        }
+
+        else {
+
+          fdate = prompt("Date of flight: ");
+
+          $.ajax(root_url + "instances", {
+            type: 'POST',
+            xhrFields: {withCredentials: true},
+            data: {"instance":{
+              "flight_id": fid,
+              "date": fdate,
+              "is_cancelled": true
+            }},
+            dataType: "json",
+            success: function(response) {
+              console.log(response);
+            }
+          });
+        }
+
+      }
+    })
+
+    flightdiv.find(".status").replaceWith('<div class="status">Status: Cancelled</div>');
+  })
+
+  flightdiv.append(cancelbtn);
+
+  ontimebtn = $('<button class="ontime">On Time</button>');
+  ontimebtn.click(function() {
+
+    $.ajax(root_url + "instances?filter[flight_id]=" + encodeURIComponent(fid),  {
+      type: 'GET',
+      xhrFields: {withCredentials: true},
+      success: function(instances) {
+        console.log(instances);
+
+        if (instances != null) {
+
+          for (var i=0; i<instances.length; i++) {
+
+            iid = instances[i].id;
+
+            $.ajax(root_url + "instances/" + encodeURIComponent(iid), {
+              type: 'PATCH',
+              xhrFields: {withCredentials: true},
+              data: {"instance":{
+                "is_cancelled": false
+              }},
+              dataType: "json",
+              success: function(response) {
+                console.log(response);
+              }
+            });
+          }
+        }
+
+        else {
+
+          fdate = prompt("Date of flight: ");
+
+          $.ajax(root_url + "instances", {
+            type: 'POST',
+            xhrFields: {withCredentials: true},
+            data: {"instance":{
+              "flight_id": fid,
+              "date": fdate,
+              "is_cancelled": false
+            }},
+            dataType: "json",
+            success: function(response) {
+              console.log(response);
+            }
+          });
+        }
+
+      }
+    })
+
+    flightdiv.find(".status").replaceWith('<div class="status">Status: On Time</div>');
+  })
+
+  flightdiv.append(ontimebtn);
+
+  return flightdiv;
+ }
+
 
