@@ -47,6 +47,10 @@ const build_navbar = function (title, subtitle) {
     nav.append('<li class ="nav_element" id ="banner"></li>');
     //adding the elements
     $('#home_button').append('<button id="home"> Home </button>');
+    $('#home_button').click(function () {
+        build_homepage_interface();
+    });
+
 
     //airports
     const airports = $('#airports_button');
@@ -1204,7 +1208,7 @@ const create_airports_list_helper = function (airports) {
 };
 
 const create_airport_list_item = function (main_table, airport) {
-    const table_header_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
+    const table_header_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
     const airport_id = airport.id;
 
     const new_row = $('<tr></tr>');
@@ -1244,6 +1248,7 @@ const create_airport_list_item = function (main_table, airport) {
     new_row.append(buttons);
     main_table.append(new_row);
 };
+
 
 const get_airport_helper = function () {
     const airport_name = $('#airports-name');
@@ -1411,11 +1416,13 @@ const get_weather_forecast = function (airports, index) {
         type: 'GET',
         success: function (response) {
             const weather_list = response.list;
-            for (const data in weather_list) {
-                const time_right_now = new Date();
-                const prediction_time = new Date(data.dt);
+            const todays_data = weather_list[0];
 
-                const weather = data.weather.main;
+            if (todays_data) {
+                const time_right_now = new Date();
+                const prediction_time = new Date(todays_data.dt);
+
+                const weather = todays_data.weather.main;
 
                 if (weather === 'Snow') {
                     if (prediction_time > time_right_now) {
@@ -1429,9 +1436,12 @@ const get_weather_forecast = function (airports, index) {
                     // Green dot
                     weather_map_datum.css('background-color', 'green');
                 }
-
-                next();
+            } else {
+                // Green dot
+                weather_map_datum.css('background-color', 'green');
             }
+
+            next();
         },
         error: function (error) {
             console.log(error);

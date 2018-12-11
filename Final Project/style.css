@@ -324,18 +324,3 @@ color: white;
     border-radius: 50%;
     display: inline-block;
 }
-
-td{
- text-align: center;
- margin: 5px;
- border-bottom-color: black;
-}
-
-tr {
-  border-style: solid;
-}
-
-button{
-  background-color: black;
-  color: white;
-}
