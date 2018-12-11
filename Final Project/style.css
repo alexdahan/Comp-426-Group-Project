@@ -248,14 +248,29 @@ h2 {
   margin: 5px;
   font-size: 25px;
 }
-
+/*flight */
 .flight {
   padding: 5px;
   background-color: lightgray;
   margin: 5px;
   width: 700px;
 }
+.delay {
+    background-color: black;
+   color: white;
+}
+.ontime{
+  background-color: black;
+color: white;
+}
 
+.qlist{
+  position: relative;
+  overflow-y: scroll;
+  height: 90%;
+}
+
+/*airport*/
 .airports-container {
     width: 100%;
 }
