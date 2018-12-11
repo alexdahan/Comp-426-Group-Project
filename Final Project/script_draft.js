@@ -47,12 +47,7 @@ const build_navbar = function (title, subtitle) {
     nav.append('<li class ="nav_element" id ="banner"></li>');
     //adding the elements
     $('#home_button').append('<button id="home"> Home </button>');
-    $('#home_button').click(function () {
-        build_homepage_interface();
-    });
 
-    
-    
     //airports
     const airports = $('#airports_button');
     airports.append('<button id="airports"> Airports </button>');
@@ -1121,14 +1116,12 @@ const create_airport_form = function (method) {
     const airport_lat = $('<input id="airports-lat" type="text" />');
     const airport_long = $('<input id="airports-long" type="text" />');
     const airport_city = $('<input id="airports-city" type="text" />');
-    const airport_state = $('<input id="airports-state" type="text" />');
-    const airport_city_url = $('<input id="airports-city-url" type="text" />');
     const airport_info = $('<input id="airports-info" type="text" />');
 
-    const input_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const input_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
     const inputs = [
         airport_name, airport_code, airport_lat, airport_long, airport_city,
-        airport_state, airport_city_url, airport_info
+         airport_info
     ];
 
     main_form.append(airport_id);
@@ -1186,7 +1179,7 @@ const create_airports_list = function () {
 };
 
 const create_airports_list_helper = function (airports) {
-    const table_header_names = ['', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const table_header_names = ['', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
 
     const airport_container = $('#airports-right');
     airport_container.empty();
@@ -1211,7 +1204,7 @@ const create_airports_list_helper = function (airports) {
 };
 
 const create_airport_list_item = function (main_table, airport) {
-    const table_header_names = ['null', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const table_header_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
     const airport_id = airport.id;
 
     const new_row = $('<tr></tr>');
@@ -1258,15 +1251,13 @@ const get_airport_helper = function () {
     const airport_lat = $('#airports-lat');
     const airport_long = $('#airports-long');
     const airport_city = $('#airports-city');
-    const airport_state = $('#airports-state');
-    const airport_city_url = $('#airports-city-url');
+ 
     const airport_info = $('#airports-info');
 
     return {
         name: airport_name.val(), code: airport_code.val(),
         latitude: airport_lat.val(), longitude: airport_long.val(),
-        city: airport_city.val(), state: airport_state.val(),
-        city_url: airport_city_url.val(), info: airport_info.val(),
+      
         user_id: 1
     };
 };
@@ -1278,8 +1269,6 @@ const set_airport_helper = function (airport) {
     const airport_lat = $('#airports-lat');
     const airport_long = $('#airports-long');
     const airport_city = $('#airports-city');
-    const airport_state = $('#airports-state');
-    const airport_city_url = $('#airports-city-url');
     const airport_info = $('#airports-info');
 
     airport_id.val(airport.id);
@@ -1288,8 +1277,7 @@ const set_airport_helper = function (airport) {
     airport_lat.val(airport.latitude);
     airport_long.val(airport.longitude);
     airport_city.val(airport.city);
-    airport_state.val(airport.state);
-    airport_city_url.val(airport.city_url);
+   
     airport_info.val(airport.info);
 };
 
@@ -1451,4 +1439,3 @@ const get_weather_forecast = function (airports, index) {
         }
     });
 };
-
