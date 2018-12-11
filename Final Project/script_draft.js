@@ -738,6 +738,71 @@ var build_airlines_interface = function() {
 
 };
 
+var build_flights_interface = function() {
+
+  let body = $('body');
+  body.empty();
+
+  body.append('<div class ="navbar"></div>');
+  //Setting up the spaces
+  $('.navbar').append('<ul class="nav"></ul>');
+  $('.nav').append('<li class ="nav_buttons" id ="flights_button"></li>');
+  $('.nav').append('<li class ="nav_buttons" id ="airlines_button"></li>');
+  $('.nav').append('<li class ="nav_buttons" id ="airports_button"></li>');
+  $('.nav').append('<li class ="nav_buttons" id ="home_button"></li>');
+  $('.nav').append('<li class ="nav_element" id ="banner"></li>');
+  //adding the elements
+  $('#home_button').append('<button id="home"> Home </button>');
+  $('#home_button').click(function(){
+      build_homepage_interface();
+  })
+  //airports
+  $('#airports_button').append('<button id="airports"> Airports </button>');
+  $('#airports_button').click(function(){
+      build_airports_interface();
+  })
+
+  //airlines
+  $('#airlines_button').append('<button id="airlines"> Airlines </button>');
+  $('#airlines_button').click(function(){
+      build_airlines_interface();
+  })
+
+  //flights
+  $('#flights_button').append('<button id="flights"> Flights </button>');
+  $('#flights_button').click(function(){
+      build_flights_interface();
+  })
+
+  //banner
+  $('#banner').append('<h3 class="navTitle"> RDU Adjustment Portal </h3>');
+
+  body.append('<div class="header_section" id="FL"></div>');
+  let header = $('#FL');
+  header.append('<h1 class="title"> Flight Adjustments </h1>');
+  header.append('<h4 class="subtitle"> In this section, you can modify the status of a flight.</h4>');
+
+  let flightlist = $('<div class="qlist"></div>');
+  body.append(flightlist);
+
+  $.ajax(root_url + "flights?filter[departure_id]=148709", {
+    type: 'GET',
+    xhrFields: {withCredentials: true},
+    success: function(flights) {
+      console.log(flights);
+
+      for (var i=0; i<flights.length; i++) {
+        let flightdiv = create_flight_div(flights[i]);
+        let fid = flights[i].id;
+        flightlist.append(flightdiv);
+      }
+
+    }
+
+  })
+
+}
+
 let create_flight_div = function(flight) {
 
   let fid = flight.id;
