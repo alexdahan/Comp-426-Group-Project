@@ -47,7 +47,12 @@ const build_navbar = function (title, subtitle) {
     nav.append('<li class ="nav_element" id ="banner"></li>');
     //adding the elements
     $('#home_button').append('<button id="home"> Home </button>');
+    $('#home_button').click(function () {
+        build_homepage_interface();
+    });
 
+    
+    
     //airports
     const airports = $('#airports_button');
     airports.append('<button id="airports"> Airports </button>');
