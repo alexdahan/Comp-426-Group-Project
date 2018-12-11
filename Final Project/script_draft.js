@@ -1120,12 +1120,10 @@ const create_airport_form = function (method) {
     const airport_lat = $('<input id="airports-lat" type="text" />');
     const airport_long = $('<input id="airports-long" type="text" />');
     const airport_city = $('<input id="airports-city" type="text" />');
-    const airport_info = $('<input id="airports-info" type="text" />');
 
-    const input_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
+    const input_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City'];
     const inputs = [
-        airport_name, airport_code, airport_lat, airport_long, airport_city,
-         airport_info
+        airport_name, airport_code, airport_lat, airport_long, airport_city
     ];
 
     main_form.append(airport_id);
@@ -1183,7 +1181,7 @@ const create_airports_list = function () {
 };
 
 const create_airports_list_helper = function (airports) {
-    const table_header_names = ['', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'Info'];
+    const table_header_names = ['', 'Name', 'Code', 'Latitude', 'Longitude', 'City'];
 
     const airport_container = $('#airports-right');
     airport_container.empty();
@@ -1208,7 +1206,7 @@ const create_airports_list_helper = function (airports) {
 };
 
 const create_airport_list_item = function (main_table, airport) {
-    const table_header_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const table_header_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL'];
     const airport_id = airport.id;
 
     const new_row = $('<tr></tr>');
@@ -1256,8 +1254,6 @@ const get_airport_helper = function () {
     const airport_lat = $('#airports-lat');
     const airport_long = $('#airports-long');
     const airport_city = $('#airports-city');
- 
-    const airport_info = $('#airports-info');
 
     return {
         name: airport_name.val(), code: airport_code.val(),
@@ -1274,7 +1270,6 @@ const set_airport_helper = function (airport) {
     const airport_lat = $('#airports-lat');
     const airport_long = $('#airports-long');
     const airport_city = $('#airports-city');
-    const airport_info = $('#airports-info');
 
     airport_id.val(airport.id);
     airport_name.val(airport.name);
@@ -1283,7 +1278,6 @@ const set_airport_helper = function (airport) {
     airport_long.val(airport.longitude);
     airport_city.val(airport.city);
    
-    airport_info.val(airport.info);
 };
 
 const delete_airport = function (airport_id) {
