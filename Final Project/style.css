@@ -265,3 +265,9 @@ h2 {
   background-color: black;
 color: white;
 }
+
+.qlist{
+  position: relative;
+  overflow-y: scroll;
+  height: 90%;
+}
