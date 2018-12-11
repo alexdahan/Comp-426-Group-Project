@@ -114,13 +114,13 @@ body{
   list-style-type: none;
   position: relative;
     overflow-y: scroll;
-    height: 90%;
+    height: 400px;
 }
 #nonRDU_list{
   list-style-type: none;
   position: relative;
     overflow-y: scroll;
-    height: 90%;
+    height: 100%;
 }
 h2 {
   font-size:30px;
@@ -249,7 +249,6 @@ h2 {
   font-size: 25px;
 }
 
-/*Flight Interface*/
 .flight {
   padding: 5px;
   background-color: lightgray;
@@ -257,17 +256,56 @@ h2 {
   width: 700px;
 }
 
-.delay {
-    background-color: black;
-   color: white;
-}
-.ontime{
-  background-color: black;
-color: white;
+.airports-container {
+    width: 100%;
 }
 
-.qlist{
-  position: relative;
-  overflow-y: scroll;
-  height: 90%;
+#airports-left {
+    width: 49%;
+    margin: 0 auto;
+    float: left;
+}
+
+#airports-right {
+    width: 49%;
+    height: 75%;
+
+    margin: 0 auto;
+    float: right;
+    overflow: auto;
+}
+
+.airport-inputs {
+    width: 100%;
+}
+
+.airport-inputs h4 {
+    width: 20%;
+    margin: 1% 0;
+}
+
+.airport-inputs input {
+    width: 70%;
+}
+
+.airports-button-container {
+    width: 90%;
+
+    text-align: right;
+}
+
+.airports-list-buttons > *, .airport-inputs > *, .airports-create-container > * {
+    display: inline-block;
+}
+
+#airports-id {
+    display: none;
+}
+
+.airports-dot {
+    height: 25px;
+    width: 25px;
+    background-color: #bbb;
+    border-radius: 50%;
+    display: inline-block;
 }

@@ -1,4 +1,5 @@
 var root_url = "http://comp426.cs.unc.edu:3001/";
+var weather_map_key = '15fe6bd5574e8c58006ec0dc1706d482'; 
 
 $(document).ready(() => {
     $('#login_btn').on('click', () => {
@@ -28,6 +29,59 @@ $(document).ready(() => {
 	       });
     });
 });
+
+const build_navbar = function (title, subtitle) {
+    const body = $('body');
+    body.empty();
+
+    //creates navigation bar
+    body.append('<div class ="navbar"></div>');
+    //Setting up the spaces
+    $('.navbar').append('<ul class="nav"></ul>');
+
+    const nav = $('.nav');
+    nav.append('<li class ="nav_buttons" id ="flights_button"></li>');
+    nav.append('<li class ="nav_buttons" id ="airlines_button"></li>');
+    nav.append('<li class ="nav_buttons" id ="airports_button"></li>');
+    nav.append('<li class ="nav_buttons" id ="home_button"></li>');
+    nav.append('<li class ="nav_element" id ="banner"></li>');
+    //adding the elements
+    $('#home_button').append('<button id="home"> Home </button>');
+
+    //airports
+    const airports = $('#airports_button');
+    airports.append('<button id="airports"> Airports </button>');
+    airports.click(function () {
+        build_airports_interface();
+    });
+
+    //airlines
+    const airlines = $('#airlines_button');
+    airlines.append('<button id="airlines"> Airlines </button>');
+
+    airlines.click(function () {
+        build_airlines_interface();
+    });
+
+    //flights
+    const flights = $('#flights_button');
+    flights.append('<button id="flights"> Flights </button>');
+
+    flights.click(function () {
+        build_flights_interface();
+    });
+
+    //banner
+    $('#banner').append('<h3 class="navTitle"> RDU Adjustment Portal </h3>');
+
+    //Header Section of Home Page
+    body.append('<div class="header_section" id="hp"></div>');
+    let header = $('#hp');
+    header.append('<h1 class="title">' + title + '</h1>');
+    header.append('<h4 class="subtitle">' + subtitle + '</h4> ');
+
+    return body;
+};
 
 var build_homepage_interface = function() {
     let body = $('body');
@@ -1009,3 +1063,387 @@ let create_flight_div = function(flight) {
 
   return flightdiv;
  }
+
+const build_airports_interface = function () {
+    const title = 'Airport Adjustments';
+    const subtitle = 'In this section, you can add the create, edit, and delete the airports for each airline.';
+
+    const body = build_navbar(title, subtitle);
+    const main_content = $('<div class="airports-container"></div>');
+    const form_container = $('<div id="airports-left"></div>');
+    const airport_container = $('<div id="airports-right"></div>');
+
+    main_content.append(form_container);
+    main_content.append(airport_container);
+
+    body.append(main_content);
+
+    reset_airports();
+};
+
+const reset_airports = function () {
+    init_airport_form();
+    create_airports_list();
+};
+
+const init_airport_form = function () {
+    const form_container = $('#airports-left');
+    form_container.empty();
+
+    const container = $('<div class="airports-create-container"></div>');
+
+    const create = $('<button>Create Airport</button>');
+
+    create.on('click', function () {
+        create_airport_form('POST');
+    });
+
+    container.append($('<p>Click here to create a new airport:</p>'));
+    container.append(create);
+
+    form_container.append(container);
+};
+
+const create_airport_form = function (method) {
+    const form_container = $('#airports-left');
+    form_container.empty();
+
+    const main_form = $('<form class="form"></form>');
+
+    const airport_id = $('<input type="hidden" id="airports-id" disabled />');
+    const airport_name = $('<input id="airports-name" type="text" />');
+    const airport_code = $('<input id="airports-code" type="text" />');
+    const airport_lat = $('<input id="airports-lat" type="text" />');
+    const airport_long = $('<input id="airports-long" type="text" />');
+    const airport_city = $('<input id="airports-city" type="text" />');
+    const airport_state = $('<input id="airports-state" type="text" />');
+    const airport_city_url = $('<input id="airports-city-url" type="text" />');
+    const airport_info = $('<input id="airports-info" type="text" />');
+
+    const input_names = ['Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const inputs = [
+        airport_name, airport_code, airport_lat, airport_long, airport_city,
+        airport_state, airport_city_url, airport_info
+    ];
+
+    main_form.append(airport_id);
+
+    for (let i = 0; i < inputs.length; i++) {
+        const input_container = $('<div class="airport-inputs"></div>');
+
+        const name = input_names[i];
+        const input = inputs[i];
+
+        input_container.append($('<h4>' + name + ':</h4>'));
+        input_container.append(input);
+
+        main_form.append(input_container);
+    }
+
+    const buttons_container = $('<div class="airports-button-container"></div>');
+
+    const submit = $('<button>Submit</button>');
+    const cancel = $('<button>Cancel</button>');
+
+    submit.on('click', function () {
+        submit_airport(method);
+    });
+    cancel.on('click', init_airport_form);
+
+    buttons_container.append(submit);
+    buttons_container.append(cancel);
+
+    main_form.append('<br />');
+    main_form.append(buttons_container);
+
+    main_form.on('submit', function (e) {
+        e.preventDefault();
+    });
+
+    form_container.append(main_form);
+    return inputs;
+};
+
+const create_airports_list = function () {
+    const url = root_url + 'airports';
+
+    $.ajax(url, {
+        type: 'GET',
+        xhrFields: {withCredentials: true},
+        success: function (response) {
+            create_airports_list_helper(response);
+        },
+        error: function (response) {
+            alert(JSON.stringify(response));
+            console.log(response);
+        }
+    });
+};
+
+const create_airports_list_helper = function (airports) {
+    const table_header_names = ['', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+
+    const airport_container = $('#airports-right');
+    airport_container.empty();
+
+    const main_table = $('<table></table>');
+    const table_header_row = $('<tr></tr>');
+
+    for (const name of table_header_names) {
+        table_header_row.append($('<th>' + name + '</th>'));
+    }
+
+    table_header_row.append($('<th></th>'));
+    main_table.append(table_header_row);
+
+    for (const airport of airports) {
+        create_airport_list_item(main_table, airport);
+    }
+
+    airport_container.append(main_table);
+
+    set_weather_helper(airports, 0);
+};
+
+const create_airport_list_item = function (main_table, airport) {
+    const table_header_names = ['null', 'Name', 'Code', 'Latitude', 'Longitude', 'City', 'State', 'City URL', 'Info'];
+    const airport_id = airport.id;
+
+    const new_row = $('<tr></tr>');
+    const buttons = $('<td class="airports-list-buttons"></td>');
+
+    const edit_button = $('<button>Edit</button>');
+    const delete_button = $('<button>Delete</button>');
+
+    const weather_map_datum = $('<td>' +
+        '<span id="airports-weather-' + airport_id + '" class="airports-dot"></span>' +
+        '</td>');
+
+    new_row.append(weather_map_datum);
+
+    for (let header of table_header_names) {
+        header = header.replace(' ', '_').toLowerCase();
+
+        let datum = '';
+        if (airport.hasOwnProperty(header) && airport[header]) {
+            datum = airport[header];
+        }
+
+        new_row.append('<td>' + datum + '</td>');
+    }
+
+    edit_button.on('click', function () {
+        edit_airport(airport);
+    });
+
+    delete_button.on('click', function () {
+        delete_airport(airport.id);
+    });
+
+    buttons.append(edit_button);
+    buttons.append(delete_button);
+
+    new_row.append(buttons);
+    main_table.append(new_row);
+};
+
+const get_airport_helper = function () {
+    const airport_name = $('#airports-name');
+    const airport_code = $('#airports-code');
+    const airport_lat = $('#airports-lat');
+    const airport_long = $('#airports-long');
+    const airport_city = $('#airports-city');
+    const airport_state = $('#airports-state');
+    const airport_city_url = $('#airports-city-url');
+    const airport_info = $('#airports-info');
+
+    return {
+        name: airport_name.val(), code: airport_code.val(),
+        latitude: airport_lat.val(), longitude: airport_long.val(),
+        city: airport_city.val(), state: airport_state.val(),
+        city_url: airport_city_url.val(), info: airport_info.val(),
+        user_id: 1
+    };
+};
+
+const set_airport_helper = function (airport) {
+    const airport_id = $('#airports-id');
+    const airport_name = $('#airports-name');
+    const airport_code = $('#airports-code');
+    const airport_lat = $('#airports-lat');
+    const airport_long = $('#airports-long');
+    const airport_city = $('#airports-city');
+    const airport_state = $('#airports-state');
+    const airport_city_url = $('#airports-city-url');
+    const airport_info = $('#airports-info');
+
+    airport_id.val(airport.id);
+    airport_name.val(airport.name);
+    airport_code.val(airport.code);
+    airport_lat.val(airport.latitude);
+    airport_long.val(airport.longitude);
+    airport_city.val(airport.city);
+    airport_state.val(airport.state);
+    airport_city_url.val(airport.city_url);
+    airport_info.val(airport.info);
+};
+
+const delete_airport = function (airport_id) {
+    const url = root_url + 'airports/' + airport_id;
+
+    $.ajax(url,
+        {
+            type: 'DELETE',
+            xhrFields: {withCredentials: true},
+            success: () => {
+                reset_airports();
+            }, error: (error) => {
+                alert(JSON.stringify(error));
+                console.log(error);
+            }
+        });
+};
+
+const edit_airport = function (airport) {
+    create_airport_form('PUT');
+
+    set_airport_helper(airport);
+
+    const airport_name = $('#airports-name');
+    const airport_code = $('#airports-code');
+
+    airport_name.prop('disabled', true);
+    airport_code.prop('disabled', true);
+};
+
+const submit_airport = function (method) {
+    let url = root_url + 'airports';
+    if (method === 'PUT') {
+        const airport_id = $('#airports-id');
+        url += '/' + airport_id.val();
+    }
+
+    const airport = get_airport_helper();
+    airport.updated_at = new Date();
+
+    $.ajax(url,
+        {
+            type: method,
+            xhrFields: {withCredentials: true},
+            data: {
+                airport: airport
+            },
+            success: () => {
+                reset_airports();
+            }, error: (error) => {
+                alert(error);
+            }
+        });
+};
+
+const create_weather_map_query = function (airport) {
+    const lat = airport.latitude;
+    const long = airport.longitude;
+    const city = airport.city;
+
+    if (lat && long) {
+        return 'lat=' + lat + '&lon=' + long + '&appid=' + weather_map_key;
+    } else if (city) {
+        return 'q=' + city + ',us&appid=' + weather_map_key;
+    }
+
+    return undefined;
+};
+
+const set_weather_helper = function (airports, index) {
+    if (index >= airports.length) {
+        return;
+    }
+
+    get_weather_right_now(airports, index);
+};
+
+const get_weather_right_now = function (airports, index) {
+    // Zip is more accurate if we can use it
+    //https://api.openweathermap.org/data/2.5/weather?zip=04462,us&appid=15fe6bd5574e8c58006ec0dc1706d482
+    const airport = airports[index];
+    const weather_map_datum = $('#airports-weather-' + airport.id);
+
+    const next = function () {
+        set_weather_helper(airports, index + 1);
+    };
+
+    const query = create_weather_map_query(airport);
+    if (!query) {
+        next();
+        return;
+    }
+
+    const url = 'https://api.openweathermap.org/data/2.5/weather?' + query;
+    $.ajax(url, {
+        type: 'GET',
+        success: function (response) {
+            const weather = response.weather[0].main;
+            if (weather === 'Snow') {
+                // Check if prediction or happening currently
+                get_weather_forecast(airports, index);
+            } else {
+                weather_map_datum.css('background-color', 'green');
+                next();
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            next();
+        }
+    });
+};
+
+const get_weather_forecast = function (airports, index) {
+    const airport = airports[index];
+    const weather_map_datum = $('#airports-weather-' + airport.id);
+
+    const next = function () {
+        set_weather_helper(airports, index + 1);
+    };
+
+    const query = create_weather_map_query(airport);
+    if (!query) {
+        next();
+        return;
+    }
+
+    const url = 'https://api.openweathermap.org/data/2.5/forecast?' + query;
+    $.ajax(url, {
+        type: 'GET',
+        success: function (response) {
+            const weather_list = response.list;
+            for (const data in weather_list) {
+                const time_right_now = new Date();
+                const prediction_time = new Date(data.dt);
+
+                const weather = data.weather.main;
+
+                if (weather === 'Snow') {
+                    if (prediction_time > time_right_now) {
+                        // Output yellow dot
+                        weather_map_datum.css('background-color', 'yellow');
+                    } else {
+                        // Output red dot
+                        weather_map_datum.css('background-color', 'red');
+                    }
+                } else {
+                    // Green dot
+                    weather_map_datum.css('background-color', 'green');
+                }
+
+                next();
+            }
+        },
+        error: function (error) {
+            console.log(error);
+            next();
+        }
+    });
+};
+
